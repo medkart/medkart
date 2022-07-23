@@ -71,7 +71,8 @@ if Picknote is not None and ItemMaster is not None and Trnsfr is not None and CS
                 try:
                     x = st.text_input(f"please enter productCode of {name}:")
                     if x is not None:
-                        l2.append(x)
+                        if type(x)=='int32'| type(x)=='int64'
+                            l2.append(x)
                 except:
                     print("Please Run Again Module")
                     break
@@ -82,10 +83,10 @@ if Picknote is not None and ItemMaster is not None and Trnsfr is not None and CS
         
         for i,j in d1.items():
             PickNote1['ProductCode']  = np.where(PickNote1['ProductName']==i,j,PickNote1['ProductCode'])
-        PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('int64')
+        PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('float64').astype('int64')
     
     else: 
-        PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('int64')
+        PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('float64').astype('int64')
 
 
     PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('str')
