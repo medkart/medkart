@@ -71,7 +71,7 @@ if Picknote is not None and ItemMaster is not None and Trnsfr is not None and CS
                 try:
                     x = st.text_input(f"please enter productCode of {name}:")
                     if x is not None:
-                        if type(x)=='int32'| type(x)=='int64'
+                        if type(x)=='int32'| type(x)=='int64':
                             l2.append(x)
                 except:
                     print("Please Run Again Module")
