@@ -9,11 +9,12 @@ from io import BytesIO
 
 def to_excel(df,df1):
     output = BytesIO()
-    writer = pd.ExcelWriter(output, engine='xlsxwriter')
-    df.to_excel(writer, index=False, sheet_name='PK Data')
-    df1.to_excel(writer,index=False,sheet_name='Unique Items')
-    writer.save()
-    processed_data = output.getvalue()
+    if output is not None:
+        writer = pd.ExcelWriter(output, engine='xlsxwriter')
+        df.to_excel(writer, index=False, sheet_name='PK Data')
+        df1.to_excel(writer,index=False,sheet_name='Unique Items')
+        writer.save()
+        processed_data = output.getvalue()
     return processed_data
 
 
