@@ -58,7 +58,7 @@ if Stock is not None:
 if Picknote is not None and ItemMaster is not None and Trnsfr is not None and CS is not None and Stock is not None:
     PickNote1  = pd.merge(Picknote,ItemMaster,on='ProductName',how='left')
     PickNote1 = PickNote1[PickNote1['TransferTo'].notnull()]
-    PickNote1['TransferToCode'] = PickNote1['TransferToCode'].astype('int64')
+    PickNote1['TransferToCode'] = PickNote1['TransferToCode'].astype('float64').astype('int64')
     PickNote1['TransferToCode'] = PickNote1['TransferToCode'].astype('str')
     
     if PickNote1['ProductCode'].dtype=='float64':
