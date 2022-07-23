@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime,date,timedelta,time
 import streamlit as st
-
+from pyxlsb import open_workbook as open_xlsb
 from io import BytesIO
 
 def to_excel(df,df1):
@@ -70,7 +70,8 @@ if Picknote is not None and ItemMaster is not None and Trnsfr is not None and CS
                 st.write(name)
                 try:
                     x = st.text_input(f"please enter productCode of {name}:")
-                    l2.append(x)
+                    if x is not None:
+                        l2.append(x)
                 except:
                     print("Please Run Again Module")
                     break
