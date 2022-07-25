@@ -92,6 +92,8 @@ if Picknote is not None and ItemMaster is not None and Trnsfr is not None and CS
     else:
         PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('float64').astype('int64')
 
+
+if PickNote1['ProductCode'].notnull():
     PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('float64').astype('int64')
     PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('str')
 
