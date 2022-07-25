@@ -86,14 +86,13 @@ if Picknote is not None and ItemMaster is not None and Trnsfr is not None and CS
         d1 = dict(zip(NotFound['ProductName'].unique(),l2))
         st.write(d1)
         for i,j in d1.items():
-            PickNote1['ProductCode']  = np.where(PickNote1['ProductName']==i,int(j),PickNote1['ProductCode'])
+            PickNote1['ProductCode']  = np.where(PickNote1['ProductName']==i,int(float(j)),PickNote1['ProductCode'])
 
 
     else:
         PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('float64').astype('int64')
 
 
-if PickNote1['ProductCode'].notnull():
     PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('float64').astype('int64')
     PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('str')
 
