@@ -1,20 +1,24 @@
+
 import streamlit as st
 
 import pandas as pd
 import numpy as np
-from datetime import datetime,date,timedelta,time
-import streamlit as st
-from pyxlsb import open_workbook as open_xlsb
+#from datetime import datetime,date,timedelta,time
+#import streamlit as st
+#import time
+#import re
+
+
+#from pyxlsb import open_workbook as open_xlsb
 from io import BytesIO
 
 def to_excel(df,df1):
     output = BytesIO()
-    if output is not None:
-        writer = pd.ExcelWriter(output, engine='xlsxwriter')
-        df.to_excel(writer, index=False, sheet_name='PK Data')
-        df1.to_excel(writer,index=False,sheet_name='Unique Items')
-        writer.save()
-        processed_data = output.getvalue()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    df.to_excel(writer, index=False, sheet_name='PK Data')
+    df1.to_excel(writer,index=False,sheet_name='Unique Items')
+    writer.save()
+    processed_data = output.getvalue()
     return processed_data
 
 
@@ -32,7 +36,7 @@ ItemMaster = st.file_uploader("Upload product list", ".csv")
 if ItemMaster is not None:
   ItemMaster = pd.read_csv(ItemMaster,skiprows=5)
   ItemMaster = ItemMaster.loc[:,['ProductCode','ProductName']]
-  
+
 
 CS = st.file_uploader("Upload Company sales report",'.csv')
 if CS is not None:
@@ -61,7 +65,7 @@ if Picknote is not None and ItemMaster is not None and Trnsfr is not None and CS
     PickNote1 = PickNote1[PickNote1['TransferTo'].notnull()]
     PickNote1['TransferToCode'] = PickNote1['TransferToCode'].astype('float64').astype('int64')
     PickNote1['TransferToCode'] = PickNote1['TransferToCode'].astype('str')
-    
+
     if PickNote1['ProductCode'].dtype=='float64':
         NotFound = PickNote1[PickNote1['ProductCode'].isnull()]
         l2 = []
@@ -72,31 +76,30 @@ if Picknote is not None and ItemMaster is not None and Trnsfr is not None and CS
                 try:
                     x = st.text_input(f"please enter productCode of {name}:")
                     if x is not None:
-                        if type(x)=='int32'| type(x)=='int64':
-                            l2.append(x)
+                        l2.append(x)
                 except:
                     print("Please Run Again Module")
                     break
         else:
             print('Please update the product list')
-    
+
         d1 = dict(zip(NotFound['ProductName'].unique(),l2))
-        
+        st.write(d1)
         for i,j in d1.items():
-            PickNote1['ProductCode']  = np.where(PickNote1['ProductName']==i,j,PickNote1['ProductCode'])
-        PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('float64').astype('int64')
-    
-    else: 
-        PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('float64').astype('int64')
+            PickNote1['ProductCode']  = np.where(PickNote1['ProductName']==i,int(j),PickNote1['ProductCode'])
 
 
+    else:
+        PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('float64').astype('int64')
+
+    PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('float64').astype('int64')
     PickNote1['ProductCode'] = PickNote1['ProductCode'].astype('str')
 
     PickNote1['Key'] = PickNote1['ProductCode'] + PickNote1['TransferTo']
 
     Trnsfr['ProductCode'] = Trnsfr['ProductCode'].astype('str')
     Trnsfr['Key'] = Trnsfr['ProductCode']+Trnsfr['ToLocation']
-    
+
     PickNote1 = PickNote1.merge(Trnsfr,on='Key',how='left',suffixes=(None,'_x'))
     PickNote1  = PickNote1[PickNote1['ToLocation'].isnull()]
 
@@ -109,24 +112,24 @@ if Picknote is not None and ItemMaster is not None and Trnsfr is not None and CS
 
     PickNote3 = PickNote2.loc[:,['EntryNumber','ProductName','ProductCode','Quantity','Shelf','TransferTo','TransferToCode']]
     df= pd.DataFrame(PickNote3['TransferTo'].value_counts()).reset_index()
-    
+
     l1 = list(df[df['TransferTo']>100]['index'])
-    
-    
+
+
     PickNote4 = PickNote3[~PickNote3['TransferTo'].isin(l1)]
     PickNote4[['ProductCode','TransferToCode']] = PickNote4[['ProductCode','TransferToCode']].astype('int64')
-    
+
     PickNote4['Count'] = PickNote4['ProductName']
-    
-    
+
+
     PickNote5 = PickNote4.groupby(['ProductCode','ProductName']).agg({'Quantity':'sum','Count':'count'}).reset_index()
     PickNote5['ProductCode'] = PickNote5['ProductCode'].astype('int64')
-     
+
     Stock = Stock.loc[:,['ProductCode','Stock']]
-    
+
     Stock1  = Stock.groupby('ProductCode').agg({'Stock':'sum'}).reset_index()
     Stock1['Stock']  =Stock1['Stock'].astype('int64')
-    
+
     PickNote6 = PickNote5.merge(Stock1,on='ProductCode',how='left')
     PickNote4 = PickNote4.drop('Count',1)
 
